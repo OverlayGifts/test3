@@ -1,0 +1,97 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <script src="https://unpkg.com/aframe-physics-system@4.0.1/dist/aframe-physics-system.min.js"></script>
+    <script src="https://cdn.rawgit.com/donmccurdy/aframe-extras/v5.0.0/dist/aframe-extras.min.js"></script>
+    <style>
+      /* Styles for buttons and layout */
+    </style>
+  </head>
+  <body>
+    <a-scene
+      mindar-image="imageTargetSrc: ./targets.mind"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      physics="gravity: 0 -9.8 0; debug: true">
+
+      <!-- Load your puzzle image -->
+      <a-assets>
+        <img id="puzzleImage" src="https://picsum.photos/512/512">
+      </a-assets>
+
+      <a-entity id="target" mindar-image-target="targetIndex: 0">
+        <!-- Puzzle pieces -->
+        <a-plane
+          id="piece1"
+          material="src: #puzzleImage; repeat: 0.5 0.5; offset: 0 0"
+          position="-0.5 0.5 0"
+          height="0.5"
+          width="0.5"
+          rotation="0 0 0"
+          draggable="true">
+        </a-plane>
+
+        <a-plane
+          id="piece2"
+          material="src: #puzzleImage; repeat: 0.5 0.5; offset: 0.5 0"
+          position="0.5 0.5 0"
+          height="0.5"
+          width="0.5"
+          rotation="0 0 0"
+          draggable="true">
+        </a-plane>
+
+        <a-plane
+          id="piece3"
+          material="src: #puzzleImage; repeat: 0.5 0.5; offset: 0 0.5"
+          position="-0.5 -0.5 0"
+          height="0.5"
+          width="0.5"
+          rotation="0 0 0"
+          draggable="true">
+        </a-plane>
+
+        <a-plane
+          id="piece4"
+          material="src: #puzzleImage; repeat: 0.5 0.5; offset: 0.5 0.5"
+          position="0.5 -0.5 0"
+          height="0.5"
+          width="0.5"
+          rotation="0 0 0"
+          draggable="true">
+        </a-plane>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      // Function to check if the puzzle is complete
+      function checkPuzzleCompletion() {
+        const tolerance = 0.1;
+        const piece1 = document.querySelector('#piece1').object3D.position;
+        const piece2 = document.querySelector('#piece2').object3D.position;
+        const piece3 = document.querySelector('#piece3').object3D.position;
+        const piece4 = document.querySelector('#piece4').object3D.position;
+
+        // Check positions against their correct locations
+        if (
+          Math.abs(piece1.x + 0.5) < tolerance && Math.abs(piece1.y - 0.5) < tolerance &&
+          Math.abs(piece2.x - 0.5) < tolerance && Math.abs(piece2.y - 0.5) < tolerance &&
+          Math.abs(piece3.x + 0.5) < tolerance && Math.abs(piece3.y + 0.5) < tolerance &&
+          Math.abs(piece4.x - 0.5) < tolerance && Math.abs(piece4.y + 0.5) < tolerance
+        ) {
+          alert('Puzzle Completed!');
+          // Trigger the final reveal or animation here
+        }
+      }
+
+      // Add event listeners to check for puzzle completion when a piece is moved
+      document.querySelectorAll('a-plane[draggable="true"]').forEach(piece => {
+        piece.addEventListener('dragend', checkPuzzleCompletion);
+      });
+    </script>
+  </body>
+</html>
